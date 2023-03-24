@@ -1,0 +1,228 @@
+variables:
+- group: pipeline-input-data
+
+trigger:
+    branches:
+      include:
+        - main
+    paths:
+      exclude: 
+        - 'azure-pipeline-main.yml'
+        
+resources:
+  repositories:
+  - repository: self
+  - repository: pipeline_IAC
+    type: git
+    endpoint: Pipeline_IAC
+    name: Reference%20Pipeline/pipeline_IAC
+    ref: main
+    
+
+pool:
+  vmImage: ubuntu-latest
+
+
+stages:
+  - stage: provisioning
+    displayName: Provision
+    jobs: 
+      - job: provisioning
+        displayName: Cloud provision
+        steps:
+        - checkout: Pipeline_IAC
+        - task: TerraformTaskV4@4
+          displayName: Terraform init        
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+            backendServiceArm: 'AzureRM'
+            backendAzureRmResourceGroupName: '$(az_storage_resource_group)'
+            backendAzureRmStorageAccountName: '$(az_storage_account_name)'
+            backendAzureRmContainerName: '$(az_storage_container_name)'
+            backendAzureRmKey: '$(az_storage_tfstate_key)'
+
+        - task: TerraformTaskV4@4
+          displayName: Provisioning Azure infra
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+            commandOptions: '-auto-approve -target="module.shared"'
+            environmentServiceNameAzureRM: 'AzureRM'
+
+        - task: TerraformTaskV4@4
+          displayName: Provisioning SQ
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+            commandOptions: '-auto-approve -target="module.sonarqube"'
+            environmentServiceNameAzureRM: 'AzureRM'
+      
+      - job: postconfig
+        displayName: Configuration
+        dependsOn: provisioning
+        steps:
+        - checkout: Pipeline_IAC
+        - task: TerraformTaskV4@4
+          displayName: Terraform init        
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+            backendServiceArm: 'AzureRM'
+            backendAzureRmResourceGroupName: '$(az_storage_resource_group)'
+            backendAzureRmStorageAccountName: '$(az_storage_account_name)'
+            backendAzureRmContainerName: '$(az_storage_container_name)'
+            backendAzureRmKey: '$(az_storage_tfstate_key)'
+
+        - task: TerraformTaskV4@4
+          displayName: SQ configuration
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+            commandOptions: '-auto-approve -target="module.sq_config"' 
+            environmentServiceNameAzureRM: 'AzureRM'
+
+        - task: terraform-outputs@0
+          displayName: Mapping outputs
+          inputs:
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+            mapSensitiveOutputsAsSecrets: true
+
+        - task: TerraformTaskV4@4
+          displayName: Updating service connection
+          env:
+            AZDO_PERSONAL_ACCESS_TOKEN: $(access_token)
+            AZDO_ORG_NAME: $(ado_org_name)
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+            commandOptions: '-auto-approve -target="module.ado.azuredevops_serviceendpoint_sonarqube.sq-connection" -var sq_service_connection_host="$(sonarqube_endpoint)" -var sq_service_connection_token="$(sonarqube_token)"'
+            environmentServiceNameAzureRM: 'AzureRM'
+    
+
+  - stage: validation
+    displayName: Validate
+    jobs:
+      - job: validate
+        displayName: SQ analysis
+        steps:
+        - checkout: self
+        - task: SonarQubePrepare@5
+          displayName: SQ preparation
+          inputs:
+            SonarQube:  'sonarqube'
+            scannerMode: 'Other'                
+
+        - task: Maven@4
+          displayName: "Analyzing"
+          inputs:
+            mavenPomFile: 'pom.xml'
+            publishJUnitResults: false
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: true
+            sqMavenPluginVersionChoice: 'pom'
+
+        - task: CopyFiles@2
+          displayName: 'Copy build files'
+          inputs:
+            contents: 'target/microservice-temperature-store-1.0.jar'
+            targetFolder: '$(Build.ArtifactStagingDirectory)'
+        - publish: '$(Build.ArtifactStagingDirectory)'
+          displayName: 'Publish build artifact'
+          artifact: drop
+
+        - task: SonarQubePublish@4
+          displayName: Publish SQ results
+          inputs:
+            pollingTimeoutSec: '300'
+        - task: sonar-buildbreaker@8
+          displayName: Quality gate check
+          inputs:
+            SonarQube: 'sonarqube'
+
+  - stage: deployment
+    displayName: Deploy
+    jobs:
+      - job: push
+        displayName: Deployment
+        steps:
+        - checkout: Pipeline_IAC
+        - checkout: self
+          path: self
+        - task: DownloadBuildArtifacts@1
+          displayName: "Download build artifact"
+          inputs:
+            buildType: 'current'
+            downloadType: 'single'
+            artifactName: 'drop'
+            downloadPath: $(Pipeline.Workspace)/self
+
+        - task: Docker@2
+          displayName: ACR Push
+          inputs:
+            containerRegistry: 'ACR connection'
+            repository: $(repository_name)
+            command: 'buildAndPush'
+            Dockerfile: '$(Pipeline.Workspace)/self/Dockerfile'
+            tags: 'latest'
+
+
+        - task: TerraformTaskV4@4
+          displayName: Terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/pipeline_IAC/terraform'
+            backendServiceArm: 'AzureRM'
+            backendAzureRmResourceGroupName: '$(az_storage_resource_group)'
+            backendAzureRmStorageAccountName: '$(az_storage_account_name)'
+            backendAzureRmContainerName: '$(az_storage_container_name)'
+            backendAzureRmKey: '$(az_storage_tfstate_key)'
+
+        - task: TerraformTaskV4@4
+          displayName: Provisioning container app
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/pipeline_IAC/terraform'
+            commandOptions: '-auto-approve -target="module.app"'
+            environmentServiceNameAzureRM: 'AzureRM'        
+          
+  - stage: destroy
+    displayName: Destroy
+    jobs:
+      - job: destroy
+        displayName: Destroy SQ
+        steps:
+        - checkout: Pipeline_IAC
+        - task: TerraformTaskV4@4
+          displayName: Terraform init
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+            backendServiceArm: 'AzureRM'
+            backendAzureRmResourceGroupName: '$(az_storage_resource_group)'
+            backendAzureRmStorageAccountName: '$(az_storage_account_name)'
+            backendAzureRmContainerName: '$(az_storage_container_name)'
+            backendAzureRmKey: '$(az_storage_tfstate_key)'
+
+        - task: TerraformTaskV4@4
+          displayName: Destroying
+          inputs:
+            provider: 'azurerm'
+            command: 'destroy'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+            commandOptions: '-auto-approve -target="module.sq_config" -target="module.sonarqube"'
+            environmentServiceNameAzureRM: 'AzureRM'        
+
+
