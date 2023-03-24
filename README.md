@@ -17,14 +17,12 @@ Pipeline stages: Cloud provision, Validation, Deployment, Destroy.
 
 #### Feature branch:
 
-run all tests that possible without environment
-
 lint,
 build,
 unit,
 story acceptance (Gherkin / Cucumber) ...
 
-save the HTML reports produced by the tests to the CI tool (or somewhere else),
+save the HTML reports produced by the tests to the CI tool
 
 report all run steps to GIT commit and link HTML reports there
 
@@ -53,6 +51,7 @@ install the code using Container App in the dev environment
 #### Schema
 ![img_2.png](img_2.png)
 ## Environment installation
+
 
 Provide the personal access token (PAT) for the Azure DevOps organization, service principal and client secret. You can create a PAT token by following the instructions [here](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page).
 
