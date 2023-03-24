@@ -15,7 +15,7 @@ Pipeline stages: Cloud provision, Validation, Deployment, Destroy.
 
 ## Pipeline functionality:
 
-Feature branch:
+#### Feature branch:
 
 run all tests that possible without environment
 
@@ -30,7 +30,7 @@ report all run steps to GIT commit and link HTML reports there
 
 prevent the branch from being merged into the master if even one test fails
 
-Master branch:
+#### Master branch:
 
 all above
 
