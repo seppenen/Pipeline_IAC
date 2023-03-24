@@ -1,5 +1,5 @@
 ﻿
-This scripts creates azure cloud environment and deploy application container to kubernetes.
+This scripts creates pipeline in Devops portal, cloud environment during pipeline runtime and deploy application container to kubernetes.
 
 ## Following definitions will be created:
 
