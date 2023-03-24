@@ -46,9 +46,12 @@ take it to artifactory / repository
 
 install the code using Container App in the dev environment
 
-Workflow process:
+#### Workflow process:
 ![img_1.png](img_1.png)
 ![img.png](img.png)
+
+#### Schema
+![img_2.png](img_2.png)
 ## Environment installation
 
 Provide the personal access token (PAT) for the Azure DevOps organization, service principal and client secret. You can create a PAT token by following the instructions [here](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page).
