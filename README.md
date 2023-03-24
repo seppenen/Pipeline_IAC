@@ -75,7 +75,7 @@ Configure following env variables:
 ./scripts/init.ps1
 ``` 
 
-Find on output repo URL.
+Created repo url will be printed out to console.
 
 ## Manual installation
 
