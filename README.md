@@ -15,7 +15,7 @@ Pipeline stages: Cloud provision, Validation, Deployment, Destroy.
 
 ## Pipeline functionality:
 
-#### Feature branch:
+### Feature branch:
 
 lint,
 build,
@@ -26,7 +26,7 @@ save the HTML reports produced by the tests to the CI tool
 
 prevent the branch from being merged into the master if even one test fails
 
-#### Master branch:
+### Master branch:
 
 all above
 
