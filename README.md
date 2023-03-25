@@ -28,7 +28,7 @@ Prevent the branch from being merged into the master if even one test fails
 
 ### Master branch:
 
-Validation / sll above
+Validation / all above
 
 Cloud provision
 SQ server provision & configuration
