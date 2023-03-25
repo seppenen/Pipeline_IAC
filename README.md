@@ -31,6 +31,7 @@ Prevent the branch from being merged into the master if even one test fails
 Validation / all above
 
 Cloud provision
+
 SQ server provision & configuration
 
 Sonarqube analysis
