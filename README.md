@@ -17,37 +17,35 @@ Pipeline stages: Cloud provision, Validation, Deployment, Destroy.
 
 ### Feature branch:
 
-lint,
-build,
-unit,
-story acceptance (Gherkin / Cucumber) ...
+Lint,
+Build,
+Unit,
+Story acceptance (Gherkin / Cucumber) ...
 
-save the HTML reports produced by the tests to the CI tool
+Save the HTML reports produced by the tests to the CI tool
 
-prevent the branch from being merged into the master if even one test fails
+Prevent the branch from being merged into the master if even one test fails
 
 ### Master branch:
 
-all above
+Validation / sll above
 
 Cloud provision
 SQ server provision & configuration
 
-sonarqube analysis
+Sonarqube analysis
 
-retrieve information from that analysis and reports 
+Retrieve information from that analysis and reports 
 
-stop if the test fails
+Stop if the test fails
 
-build container
+Build container
 
-take it to artifactory / repository
-
-build docker container
+Take it to artifactory / repository
 
 Push to ACR
 
-install the code using Container App in the dev environment
+Deploy container to kubernetes cluster.
 
 #### Workflow process:
 ![img_1.png](img_1.png)
