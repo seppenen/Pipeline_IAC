@@ -1,5 +1,5 @@
-﻿
-This scripts creates pipeline in Devops portal, cloud environment during pipeline runtime and deploy application container.
+
+Project based on Terraform. These scripts creates pipeline in Devops portal, cloud environment during pipeline runtime and deploy application containers.
 
 ## Following definitions will be created:
 
@@ -24,23 +24,28 @@ story acceptance (Gherkin / Cucumber) ...
 
 save the HTML reports produced by the tests to the CI tool
 
-report all run steps to GIT commit and link HTML reports there
-
 prevent the branch from being merged into the master if even one test fails
 
 #### Master branch:
 
 all above
 
+Cloud provision
+SQ server provision & configuration
+
 sonarqube analysis
 
-retrieve information from that analysis and reports its status to git commit
+retrieve information from that analysis and reports 
 
 stop if the test fails
 
 build container
 
 take it to artifactory / repository
+
+build docker container
+
+Push to ACR
 
 install the code using Container App in the dev environment
 
