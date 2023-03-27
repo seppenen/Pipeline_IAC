@@ -31,7 +31,7 @@ Before using this application, you must have the following prerequisites set up:
 ### Master branch:
 - Validation / all above
 - Cloud provision
-- SQL server provision and configuration
+- SQ server provision and configuration
 - SonarQube analysis
 - Retrieve information from that analysis and reports
 - Stop if the test fails
