@@ -7,7 +7,7 @@ Using this application, you can also provision necessary infrastructure during t
 
 The pipeline also runs automated tests such as jUnit, Lint, Sonarqube analysis, Cucumber/Gherkin from the pipeline. However, please note that this functionality is limited to Java Maven applications.
 
-# Prerequisites
+## Prerequisites
 Before using this application, you must have the following prerequisites set up:
 
 - An Azure DevOps account with appropriate permissions to create repositories, policies, install extensions and pipelines.
