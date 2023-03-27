@@ -65,8 +65,14 @@ Azure DevOps environment:
 - junit-jupiter-api
 
 
-Example of pom.xml and dependencies can be found in main branch.
+### Sonarqube requirements:
 
+Configure property sonar.projectKey to pom.xml.
+The value "new_project" is hardcoded value to Terraform scipts. Do not change this value.
+```bash 
+		<sonar.version>3.7.0.1746</sonar.version>
+		<sonar.projectKey>new_project</sonar.projectKey>
+``` 
 #Installation
 
 Configure following env variables:
