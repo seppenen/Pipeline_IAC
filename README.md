@@ -1,7 +1,11 @@
 
 # Overview
 
-The purpose of this Terraform application is to automate the process of creating infrastructure in Azure portal and environment in Azure DevOps portal. This includes setting up repositories, policies, and pipelines with multiple stages, including cloud provision, validate, deploy, and destroy. The pipeline has the ability to provision necessary infrastructure during runtime in Azure portal, such as a Kubernetes cluster, Postgres database, analytics, container registry, and other necessary resources. Additionally, the pipeline can run tests such as jUnit, Lint, Sonarqube analysis and Cucumber/Gherkin to ensure that the application is functioning correctly. Please note that this Terraform application is only compatible with Java Maven applications, and requires the installation of certain Maven dependencies, including cucumber-java, sonar-maven-plugin, and junit-jupiter-api.
+This Terraform application automates the process of creating infrastructure on Azure portal and creating an environment on Azure DevOps portal, which includes repositories, policies, and pipelines with stages such as cloud provision, validate, deploy, and destroy.
+
+Using this application, you can also provision necessary infrastructure during the pipeline runtime on Azure portal, including resources such as Kubernetes cluster, Postgres database, analytics, container registry, and others.
+
+The pipeline also runs automated tests such as jUnit, Lint, Cucumber/Gherkin from the pipeline. However, please note that this application only works with Java Maven applications.
 
 # Prerequisites
 Before using this application, you must have the following prerequisites set up:
