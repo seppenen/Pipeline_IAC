@@ -1,72 +1,73 @@
 
-Project based on Terraform. These scripts creates pipeline in Devops portal, cloud environment during pipeline runtime and deploy application containers.
+# Pipeline_IAC
 
-## Following definitions will be created:
+This project is based on Terraform. These scripts create a pipeline in the DevOps portal and cloud environment during the pipeline runtime, and deploy application containers.
 
-Azure Devops environment
+## The following definitions will be created:
 
-Repos and policy 
+Azure DevOps environment:
 
-Pipelines including policy, junit, lint, sonarqube tests
+- Repos and policies
+- Pipelines including policies, JUnit, Lint, and SonarQube tests
+- Environments in Azure portal (Kubernetes, pSql, ACR, analytics, SonarQube server, and configuration)
 
-Environment in Azure portal (kubernetes, pSql, ACR, analytics, Sonarqube server & configuration)
-
-Pipeline stages: Cloud provision, Validation, Deployment, Destroy.
+ Pipeline stages: 
+- Cloud provision
+- Validation
+- Deployment
+- Destroy
 
 ## Pipeline functionality:
 
 ### Feature branch:
 
-Lint,
-Build,
-Unit,
-Story acceptance (Gherkin / Cucumber) ...
-
-Save the HTML reports produced by the tests to the CI tool
-
-Prevent the branch from being merged into the master if even one test fails
+- Lint
+- Build
+- Unit
+- Story acceptance (Gherkin / Cucumber)
+- Save the HTML reports produced by the tests to the CI tool
+- Prevent the branch from being merged into the master if even one test fails
 
 ### Master branch:
-
-Validation / all above
-
-Cloud provision
-
-SQ server provision & configuration
-
-Sonarqube analysis
-
-Retrieve information from that analysis and reports 
-
-Stop if the test fails
-
-Build container
-
-Take it to artifactory / repository
-
-Push to ACR
-
-Deploy container to kubernetes cluster.
+- Validation / all above
+- Cloud provision
+- SQL server provision and configuration
+- SonarQube analysis
+- Retrieve information from that analysis and reports
+- Stop if the test fails
+- Build container
+- Take it to Artifactory / repository
+- Push to ACR
+- Deploy container to Kubernetes cluster
 
 #### Workflow process:
 ![img_1.png](img_1.png)
 ![img.png](img.png)
+
+
 
 #### Schema
 ![img_2.png](img_2.png)
 ## Environment installation
 
 
-Requirement:
 
-DevOps PAT.
-Service principal with Owner role in subscription scope.
-DevOps organization admin or permissions to install extensions.
+### Requirements:
+
+- DevOps PAT
+- Service principal with Owner role in subscription scope
+- DevOps organization admin or permissions to install extensions
+- Java Maven application
+
+### Maven dependencies: 
+- cucumber-java
+- sonar-maven-plugin
+- junit-jupiter-api
 
 
-Provide the personal access token (PAT) for the Azure DevOps organization, service principal and client secret. You can create a PAT token by following the instructions [here](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page).
+Example of pom.xml and dependencies can be found in main branch.
 
-
+#Installation
 
 Configure following env variables:
 ```bash 
@@ -86,15 +87,16 @@ Configure following env variables:
 ./scripts/init.ps1
 ``` 
 
-Created repo url will be printed out to console.
+The created repo URL will be printed out to the console
 
 ## Manual installation
 
-Initialize local state using the following commands:
+Initialize local state using the following commandsЮ
+
 ```bash 
 terraform init
 ``` 
-Install remote backend:
+Install the remote backend:
 ```bash 
 terraform apply -auto-approve -target="module.backend"
 ```
@@ -110,9 +112,10 @@ Setup ADO resources using the following commands:
 ```bash 
 terraform apply -auto-approve -target="module.ado"   
 ```
+
 Clean up:
 ```bash
-terraform apply -destroy -auto-approve -target="module.ado"   
+terraform apply -destroy -auto-approve -target="module.<moduleName>"   
 ```
 
 Sync with created repo
@@ -122,7 +125,5 @@ git init
 git remote add origin <url>
 git fetch --all
 ```
-Restart IDE.
-
-Do not commit files to main branch as it is locked and prevented from merge, only pull request is possible. Checkout firstly "feature" branch and commit and push all files.
+Restart your IDE. Do not commit files to the main branch as it is locked and prevented from merge. Only pull requests are possible. Checkout the "feature" branch first and commit and push all files to it.
 
