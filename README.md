@@ -63,9 +63,6 @@ Azure DevOps environment:
 - sonar-maven-plugin
 - junit-jupiter-api
 
-
-### Sonarqube requirements:
-
 Configure property sonar.projectKey to pom.xml.
 The Sonar project name, "new_project," is a hardcoded value that enables automatic registration of the project in the SQ server via the Terraform sq_config module. It is important not to change this value.
 
