@@ -1,21 +1,21 @@
 
-# Pipeline_IAC
+# Overview
 
-This project is based on Terraform. These scripts create a pipeline in the DevOps portal and cloud environment during the pipeline runtime, and deploy application containers.
+This Terraform application automates the creation of an entire environment in the Azure DevOps portal, including repositories, policies, and pipelines with stages for cloud provisioning, validation, deployment, and destruction. It also provisions all infrastructure in the Azure portal, such as a Kubernetes cluster, Postgres database, analytics, container registry, and other necessary resources.
 
-## The following definitions will be created:
+The pipelines are specifically designed to work with Java Maven applications and can run various tests, such as jUnit, Lint, and Cucumber/Gherkin, from the pipeline to ensure that everything is working as expected. By automating these processes, developers can focus on creating and delivering code, while the application takes care of the infrastructure setup, management, and testing.
 
-Azure DevOps environment:
+# Prerequisites
+Before using this application, you must have the following prerequisites set up:
 
-- Repos and policies
-- Pipelines including policies, JUnit, Lint, and SonarQube tests
-- Environments in Azure portal (Kubernetes, pSql, ACR, analytics, SonarQube server, and configuration)
+- An Azure DevOps account with appropriate permissions to create repositories, policies, install extensions and pipelines.
+- An Azure subscription with appropriate permissions to create resources in the Azure portal.
+- A service principal with the Owner role assigned at the subscription scope.
+- Azure DevOps personal access token with appropriate permissions.
+- Terraform installed on your machine.
+- Required maven dependencies: cucumber-java, sonar-maven-plugin, junit-jupiter-api
+- The pom.xml file must exist and have the sonar.projectKey value set to "new_project".
 
- Pipeline stages: 
-- Cloud provision
-- Validation
-- Deployment
-- Destroy
 
 ## Pipeline functionality:
 
@@ -50,20 +50,11 @@ Azure DevOps environment:
 ![img_2.png](img_2.png)
 
 
-
-### Requirements:
-
-- DevOps PAT
-- Service principal with Owner role in subscription scope
-- DevOps organization admin or permissions to install extensions
-- Java Maven application
-
 ### Maven dependencies: 
 - cucumber-java
 - sonar-maven-plugin
 - junit-jupiter-api
 
-Configure property sonar.projectKey to pom.xml.
 The Sonar project name, "new_project," is a hardcoded value that enables automatic registration of the project in the SQ server via the Terraform sq_config module. It is important not to change this value.
 
 #### Example
@@ -91,11 +82,11 @@ Configure following env variables:
 ./scripts/init.ps1
 ``` 
 
-The created repo URL will be printed out to the console
+The URL for the newly created repository will be displayed on the console.
 
 ## Manual installation
 
-Initialize local state using the following commandsЮ
+Initialize local state using the following commands
 
 ```bash 
 terraform init
@@ -117,7 +108,7 @@ Setup ADO resources using the following commands:
 terraform apply -auto-approve -target="module.ado"   
 ```
 
-Clean up:
+Destruction:
 ```bash
 terraform apply -destroy -auto-approve -target="module.<moduleName>"   
 ```
@@ -129,5 +120,5 @@ git init
 git remote add origin <url>
 git fetch --all
 ```
-Restart your IDE. Do not commit files to the main branch as it is locked and prevented from merge. Only pull requests are possible. Checkout the "feature" branch first and commit and push all files to it.
+Note: Remember to commit and push all files to the "feature" branch, as the main branch is locked and prevented from merge. Only pull requests are possible.
 
