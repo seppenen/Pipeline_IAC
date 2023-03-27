@@ -5,7 +5,7 @@ This Terraform application automates the process of creating infrastructure on A
 
 Using this application, you can also provision necessary infrastructure during the pipeline runtime on Azure portal, including resources such as Kubernetes cluster, Postgres database, analytics, container registry, and others.
 
-The pipeline also runs automated tests such as jUnit, Lint, Cucumber/Gherkin from the pipeline. However, please note that this application only works with Java Maven applications.
+The pipeline also runs automated tests such as jUnit, Lint, Sonarqube analysis, Cucumber/Gherkin from the pipeline. However, please note that this functionality is limited to Java Maven applications.
 
 # Prerequisites
 Before using this application, you must have the following prerequisites set up:
