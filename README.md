@@ -3,7 +3,7 @@
 
 This Terraform application automates the creation of an entire environment in the Azure DevOps portal, including repositories, policies, and pipelines with stages for cloud provisioning, validation, deployment, and destruction. It also provisions all infrastructure in the Azure portal, such as a Kubernetes cluster, Postgres database, analytics, container registry, and other necessary resources.
 
-The pipelines are specifically designed to work with Java Maven applications and can run various tests, such as jUnit, Lint, and Cucumber/Gherkin, from the pipeline to ensure that everything is working as expected. By automating these processes, developers can focus on creating and delivering code, while the application takes care of the infrastructure setup, management, and testing.
+The pipelines are specifically designed to work with Java Maven applications and can run various tests, such as jUnit, Lint, and Cucumber/Gherkin, Sonarqube analysis from the pipeline to ensure that everything is working as expected. By automating these processes, developers can focus on creating and delivering code, while the application takes care of the infrastructure setup, management, and testing.
 
 # Prerequisites
 Before using this application, you must have the following prerequisites set up:
