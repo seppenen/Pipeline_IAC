@@ -48,7 +48,6 @@ Azure DevOps environment:
 
 #### Schema
 ![img_2.png](img_2.png)
-## Environment installation
 
 
 
@@ -68,12 +67,14 @@ Azure DevOps environment:
 ### Sonarqube requirements:
 
 Configure property sonar.projectKey to pom.xml.
-The value "new_project" is hardcoded value to Terraform scripts. Do not change this value.
+The Sonar project name, "new_project," is a hardcoded value that enables automatic registration of the project in the SQ server via the Terraform sq_config module. It is important not to change this value.
+
+#### Example
 ```bash 
 <sonar.version>3.7.0.1746</sonar.version>
 <sonar.projectKey>new_project</sonar.projectKey>
 ``` 
-#Installation
+# Installation
 
 Configure following env variables:
 ```bash 
