@@ -1,3 +1,7 @@
+
+
+# This code imports and configures different Terraform modules.
+
 module "ado" {
   source                      = "./modules/ado"
   suffix                      = local.suffix

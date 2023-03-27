@@ -1,8 +1,7 @@
-
-//Service connection endpoints
-
+// Data source to retrieve Azure client configuration
 data "azurerm_client_config" "current" {}
 
+// Resource to create a service endpoint to run a pipeline
 resource "azuredevops_serviceendpoint_runpipeline" "pipeline" {
   project_id            = azuredevops_project.this.id
   service_endpoint_name = "Pipeline_IAC"
@@ -13,7 +12,7 @@ resource "azuredevops_serviceendpoint_runpipeline" "pipeline" {
   description = "Managed by Terraform"
 }
 
-
+// Resource to create a service endpoint for an Azure Container Registry
 resource "azuredevops_serviceendpoint_dockerregistry" "acr" {
   project_id            = azuredevops_project.this.id
   service_endpoint_name = local.az_container_service_endpoint_name
@@ -24,6 +23,7 @@ resource "azuredevops_serviceendpoint_dockerregistry" "acr" {
   description           = "This service endpoint is used to access the container registry"
 }
 
+// Resource to create a service endpoint for Azure Resource Manager (ARM)
 resource "azuredevops_serviceendpoint_azurerm" "rm" {
   project_id            = azuredevops_project.this.id
   service_endpoint_name = "AzureRM"
@@ -37,18 +37,21 @@ resource "azuredevops_serviceendpoint_azurerm" "rm" {
   azurerm_subscription_name = "Reference Pipeline"
 }
 
+// Resource to authorize the service endpoint for Azure Container Registry
 resource "azuredevops_resource_authorization" "kv_auth" {
   project_id  = azuredevops_project.this.id
   resource_id = azuredevops_serviceendpoint_dockerregistry.acr.id
   authorized  = true
 }
 
+// Resource to authorize the service endpoint for Azure Resource Manager
 resource "azuredevops_resource_authorization" "rm_auth" {
   project_id  = azuredevops_project.this.id
   resource_id = azuredevops_serviceendpoint_azurerm.rm.id
   authorized  = true
 }
 
+// Resource to create a service endpoint for SonarQube
 resource "azuredevops_serviceendpoint_sonarqube" "sq-connection" {
   project_id            = azuredevops_project.this.id
   service_endpoint_name = "sonarqube"
@@ -56,12 +59,14 @@ resource "azuredevops_serviceendpoint_sonarqube" "sq-connection" {
   token                 = var.sq_service_connection_token
 }
 
+// Resource to authorize the service endpoint for SonarQube
 resource "azuredevops_resource_authorization" "sq_auth" {
   project_id  = azuredevops_project.this.id
   resource_id = azuredevops_serviceendpoint_sonarqube.sq-connection.id
   authorized  = true
 }
 
+// Resource to authorize the service endpoint for pipeline
 resource "azuredevops_resource_authorization" "pipeline_auth" {
   project_id  = azuredevops_project.this.id
   resource_id = azuredevops_serviceendpoint_runpipeline.pipeline.id
